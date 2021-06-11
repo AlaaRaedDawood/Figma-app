@@ -1,0 +1,44 @@
+.sidebarmenu{
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    transition: 0.2s all ease-in-out;
+    border: 1px solid red;
+    padding:0;
+}
+
+.sidebarmenuitem{
+    padding-left: 3rem;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #f5f5f5;
+    font-size: 18px;
+}
+.sidebarmenuitemtitle{
+    font-family: 'Poppins', sans-serif;
+    font-weight:400;
+    margin-left: 16px;
+    font-size: 13px;
+    padding:0;
+    color: #334D6E;
+}
+.itemTitle{
+    font-size: 13px;
+    font-family: 'Poppins', sans-serif;
+    font-weight:500;
+    font-style: normal;
+    letter-spacing: 0.01em;
+    color: #334D6E;
+}
+.item{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    
+}
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap'); */
