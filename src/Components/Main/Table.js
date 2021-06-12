@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import './MainTable.css'
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import moment from 'moment'
+import { lighten, makeStyles, StylesProvider } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -30,39 +31,103 @@ const headCells = [
 ];
 
 function MainTable({ rows }) {
-  console.log("Main Table" + rows);
+  const [selectedRows , setSelectedRows] = useState([]) ;
+  const [page , setPage] = useState(1);
+  const [currentPage ,  setCurrentPage] = useState(1);
+  const rowsPerPage = 8 ;
+
+  //table pagination
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+
+  const rowsAfterPagingAndSorting = () =>{
+
+    const indexOfLastRow = currentPage * rowsPerPage;
+    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+    if(indexOfFirstRow < rows.length){
+      if(indexOfLastRow > rows.length) {
+         const newRows = rows.slice(indexOfFirstRow ,rows.length);
+         return newRows ;
+      }
+      const newRows = rows.slice(indexOfFirstRow,indexOfLastRow);
+      return newRows ;
+    }
+    if(rows.length < 8){
+      return rows.slice(0 ,rows.length);
+    }
+    return rows.slice(0 ,8);
+  }
+  // chip: {
+  //   color: ({ color }) => color,
+  //   backgroundColor: ({ backgroundColor }) => backgroundColor,
+  //   "&:hover, &:focus": {
+  //     backgroundColor: ({ hoverBackgroundColor, backgroundColor }) =>
+  //       hoverBackgroundColor
+  //         ? hoverBackgroundColor
+  //         : emphasize(backgroundColor, 0.08)
+  //   },
+  //   "&:active": {
+  //     backgroundColor: ({ hoverBackgroundColor, backgroundColor }) =>
+  //       emphasize(
+  //         hoverBackgroundColor ? hoverBackgroundColor : backgroundColor,
+  //         0.12
+  //       )
+  //   }
+  // }
+  const handleChangePage = (event, newPage) => {
+    newPage == 0 ? setCurrentPage(1) : setCurrentPage(newPage);
+  };
+
   const useStyles = makeStyles({
-    tableCell: {
+    tableContainer: {
+      "& thead th" :{
       fontFamily: 'Poppins',
-      fontWeight: 500,
+      fontWeight: 400,
       color: '#334D6E',
       fontSize: '13px',
+      },
+      "& tbody td" :{
+        fontFamily: 'Poppins',
+        fontWeight: 400,
+        color: '#707683',
+        fontSize: '13px',
 
+      },
+      "& tbody tr:hover" :{
+        cursor: 'pointer',
+        backgroundColor: '#F3F7FB'
+
+
+      }
+
+    },
+    tableCellID: {
+      color: "#323C47",
+      fontFamily: 'Poppins',
+      fontWeight: 400,
+      fontSize: '13px',
     }
+
   });
+
   const classes = useStyles();
 
   return (
     <div className='main-table'>
-      <h1>Hello111</h1>
+      <h1>Hello</h1>
 
-      <TableContainer component={Paper}>
+      <TableContainer className={classes.tableContainer} component={Paper}>
         <Table aria-label="simple table" >
 
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
-                <Checkbox
-                // indeterminate={numSelected > 0 && numSelected < rowCount}
-                // checked={rowCount > 0 && numSelected === rowCount}
-                // onChange={onSelectAllClick}
-                // inputProps={{ 'aria-label': 'select all desserts' }}
-                />
+              <Checkbox size= "small" disabled inputProps={{ 'aria-label': 'disabled checkbox' }} />
               </TableCell>
               {headCells.map((headCell) => (
                 <TableCell
-                  className={classes.tableCell}
-                  align={headCell.numeric ? 'right' : 'left'}
+
+                  align={'left'}
                 >
                   {headCell.label}
                 </TableCell>
@@ -70,25 +135,44 @@ function MainTable({ rows }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+          {
+                console.log( rowsAfterPagingAndSorting() )
+          }
+            {
+            rowsAfterPagingAndSorting().map((row) => (
               <TableRow key={row.id}>
-              <Checkbox
-                // indeterminate={numSelected > 0 && numSelected < rowCount}
-                // checked={rowCount > 0 && numSelected === rowCount}
-                // onChange={onSelectAllClick}
-                // inputProps={{ 'aria-label': 'select all desserts' }}
-                />
-                <TableCell align="left">{'#' + row.id}</TableCell>
+
+                <TableCell padding="checkbox">
+
+                  <Checkbox
+                    size="small"
+                    color="primary"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    checked={false}
+                  />
+                </TableCell>
+                <TableCell className={classes.tableCellID} align="left">{'#' + row.id}</TableCell>
                 <TableCell align="left">{row.customer.fname}</TableCell>
-                <TableCell align="left">{row.status}</TableCell>
+                <TableCell align="left">{row.status.replace("_", " ")}</TableCell>
                 <TableCell align="left">{row.supplier}</TableCell>
-                <TableCell align="left">{row.created_at}</TableCell>
+                <TableCell align="left">{moment(row.created_at).format("MMMM D,h:mma,YYYY")}</TableCell>
               </TableRow>
-            ))}
+            )
+            )
+
+            }
+
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+          rowsPerPageOptions={8}
+          component="div"
+          counts={rows.length}
+          page={page}
+          onChangePage={handleChangePage}
 
+        />
     </div>
   );
 }
