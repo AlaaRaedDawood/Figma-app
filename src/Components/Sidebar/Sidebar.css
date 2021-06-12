@@ -4,11 +4,11 @@
   }
 
 .sidenav {
-    
+
     background-color: var(--primary);
     height: 100%;
     width: 256px;
-    position: fixed;
+    /* position: fixed; */
     top: 0;
     font-family: 'Poppins', sans-serif;
     font-size: 13px;

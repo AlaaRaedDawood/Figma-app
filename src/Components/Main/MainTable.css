@@ -1,0 +1,8 @@
+.main-table{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: blue;
+  margin-left: 37px;
+}
+
