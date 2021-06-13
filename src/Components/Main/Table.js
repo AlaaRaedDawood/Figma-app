@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import './MainTable.css'
-import moment from 'moment'
-import { lighten, makeStyles, StylesProvider } from '@material-ui/core/styles';
+import moment, { normalizeUnits } from 'moment'
+import {  makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -32,16 +32,15 @@ const headCells = [
 
 function MainTable({ rows }) {
   const [selectedRows , setSelectedRows] = useState([]) ;
-  const [page , setPage] = useState(1);
+  const [nextArrow, setNextArrow ]= useState(false);
+  const [backArrow, setBackArrow]= useState(true);
   const [currentPage ,  setCurrentPage] = useState(1);
   const rowsPerPage = 8 ;
 
   //table pagination
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
 
   const rowsAfterPagingAndSorting = () =>{
-
+    console.log(backArrow + " " + nextArrow)
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
     if(indexOfFirstRow < rows.length){
@@ -75,7 +74,25 @@ function MainTable({ rows }) {
   //   }
   // }
   const handleChangePage = (event, newPage) => {
-    newPage == 0 ? setCurrentPage(1) : setCurrentPage(newPage);
+    setCurrentPage(newPage)
+
+    if(newPage== 1){
+       setBackArrow(true);
+       setNextArrow(false);
+
+    }
+    else{
+      if(rows.length < (newPage*8)){
+        setBackArrow(false);
+        setNextArrow(true);
+
+     } else{
+      setBackArrow(false);
+      setNextArrow(false);
+     }
+
+    }
+
   };
 
   const useStyles = makeStyles({
@@ -106,6 +123,9 @@ function MainTable({ rows }) {
       fontFamily: 'Poppins',
       fontWeight: 400,
       fontSize: '13px',
+    },
+    tablePaginationCaption: {
+      display: 'none'
     }
 
   });
@@ -166,11 +186,28 @@ function MainTable({ rows }) {
         </Table>
       </TableContainer>
       <TablePagination
-          rowsPerPageOptions={8}
-          component="div"
-          counts={rows.length}
-          page={page}
-          onChangePage={handleChangePage}
+
+         nextIconButtonProps={nextArrow ? {disabled:true} : {disabled:false}}
+         backIconButtonProps={backArrow ? {disabled:true} : {disabled:false}}
+         component="div"
+         rowsPerPageOptions={[8]}
+         count={rows.lenght}
+         rowsPerPage={rowsPerPage}
+         page={currentPage}
+         onChangePage={handleChangePage}
+         classes={{
+
+          caption: classes.tablePaginationCaption,
+
+            // root: classes.tablePagination,
+            // caption: classes.tablePaginationCaption,
+            // selectIcon: classes.tablePaginationSelectIcon,
+            // select: classes.tablePaginationSelect,
+            // actions: classes.tablePaginationActions,
+
+
+        }}
+
 
         />
     </div>
