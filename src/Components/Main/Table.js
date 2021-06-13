@@ -28,12 +28,11 @@ const headCells = [
   { id: 'id-number', numeric: true, disablePadding: true, label: 'ID number' },
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
-  { id: 'suppler', numeric: false, disablePadding: false, label: 'Supplier' },
+  { id: 'supplier', numeric: false, disablePadding: false, label: 'Supplier' },
   { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
 ];
 
-function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
-  const [selectedRows, setSelectedRows] = useState([]);
+function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) {
   const [nextArrow, setNextArrow] = useState(false);
   const [backArrow, setBackArrow] = useState(true);
   const [sortRow, setSortRow] = useState(false);
@@ -42,20 +41,44 @@ function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
   const [filerSelectValue, setFilterSelectValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('calories');
 
 
   //table sorting
-  function ascendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-      return 1;
-    }
-    if (b[orderBy] > a[orderBy]) {
+  function descendingComparator(a, b, orderBy) {
+    console.log('sort descendingComparator ' + JSON.stringify(a['supplier']) +" with " + JSON.stringify(b['supplier']));
+    const aString = JSON.stringify(a['supplier'])
+    const bString = JSON.stringify(b['supplier'])
+    // console.log('sort descendingComparator ' + aString +" with " + bString  + " compare " );
+    if ( bString < aString) {
+      console.log('sort descendingComparator ' + aString +" with " + bString  + " compare -1 " );
       return -1;
     }
+    if (bString > aString) {
+      console.log('sort descendingComparator ' + aString +" with " + bString  + " compare 1 " );
+      return 1;
+    }
+    console.log('sort descendingComparator ' + aString +" with " + bString  + " compare 0 " );
     return 0;
   }
-  function getComparator(orderBy) {
-    return (a, b) => ascendingComparator(a, b, orderBy);
+
+  function getComparator(order, orderBy) {
+    return order === 'desc'
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy);
+  }
+
+  function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+      const order = comparator(a[0], b[0]);
+      console.log('sort is done ' + JSON.stringify(a[0]) +" " + JSON.stringify(b[0]) + " result = " + order);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    console.log('sort not done')
+    return stabilizedThis.map((el) => el[0]);
   }
 
   //on selecting sorting option
@@ -71,20 +94,21 @@ function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
 
   //table pagination
 
-  const rowsAfterSorting = (filteredRows) => {
-    console.log("alaaaaa " + sortRow);
+  const rowsAfterSorting = (rows) => {
+    console.log("alaa sort is = " + sortRow);
     if (sortRow) {
       console.log("sortttttt " + sortRow);
-      return stableSort(filteredRows, getComparator('supplier'));
-
+      const results =  stableSort(rows, getComparator('asc' ,'gender'));
+      console.log("sort results " + JSON.stringify(results));
+      return results ;
     }
-    return filteredRows;
+    return rows;
   }
   const rowsAfterPagingAndSorting = () => {
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
     const sortedRowsResult = rowsAfterSorting(rows);
-    console.log("sortttttt " + sortedRowsResult);
+    console.log("ready to page " + JSON.stringify(sortedRowsResult));
     if (indexOfFirstRow < rows.length) {
       if (indexOfLastRow > rows.length) {
 
@@ -150,20 +174,6 @@ function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
     }
   }
 
-  //sorting
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-  }
-  const getFlag = (rowID) => {
-    console.log("flag" + selectedElements[rowID]);
-    return selectedElements[rowID];
-  }
   //styles
   const useStyles = makeStyles({
     tableContainer: {
@@ -200,7 +210,7 @@ function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
     }
 
   });
-  const handleSelectedItem = (event,itemID) => {
+  const handleSelectedItem = (event, itemID) => {
     setSelectedItem(itemID);
     //console.log(selectedElements[id] + " mmmmmmmmmmmmmmm");
     // setSelectedItem({...selectedElements , [event.target.id]: event.target.checked})
@@ -210,13 +220,13 @@ function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
   }
   const getSelectedElementValue = (id) => {
     console.log('llo' + id)
-     selectedElements.map((selectedElement) => {
-       if(selectedElement.id == id){
-         console.log('llooooolllllly ' + selectedElement.id +"   " + selectedElement.selected)
-         return selectedElement.selected ;
-       }
-     })
-     return false;
+    selectedElements.map((selectedElement) => {
+      if (selectedElement.id == id) {
+        console.log('llooooolllllly ' + selectedElement.id + "   " + selectedElement.selected)
+        return selectedElement.selected;
+      }
+    })
+    return false;
 
   }
   const classes = useStyles();
@@ -240,7 +250,7 @@ function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
           Sort by:
           <select name="sort" id="sort" onChange={handleSortOption} value={sortSelectValue}>
             <option value=""> {" " + "_" + " "} </option>
-            <option value="sortasc">Total:A to Z</option>
+            <option value="sortasc">Supplier:A to Z</option>
 
           </select>
           <i class="fas fa-caret-down"></i>
@@ -258,12 +268,15 @@ function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
               </TableCell>
               {headCells.map((headCell) => (
 
-                  <TableCell
-                    key={headCell.id}
-                    align={'left'}
-                  >
-                    {headCell.label}
-                  </TableCell>
+                <TableCell
+                  key={headCell.id}
+                  align={'left'}
+                >
+                  <TableSortLabel>
+                  {headCell.label}
+
+                  </TableSortLabel>
+                </TableCell>
 
               ))}
 
@@ -275,35 +288,35 @@ function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
               console.log('ssssssssssssssssss ' + selectedElements)
             }
             {
-              rowsAfterPagingAndSorting().map((row) =>{
-                const isItemSelected = selectedElements[row.id]? true : false;
+              rowsAfterPagingAndSorting().map((row) => {
+                const isItemSelected = selectedElements[row.id] ? true : false;
 
-                console.log(" itemmmmmmmmmmmmm " + isItemSelected);
-               return (
+                return (
 
-                <TableRow key={row.id}
-                onClick={(event) => handleSelectedItem(event,row.id)}
-                role="checkbox"
-                aria-checked={isItemSelected}
-                tabIndex={-1}
-                selected={isItemSelected}
-                >
+                  <TableRow key={row.id}
+                    onClick={(event) => handleSelectedItem(event, row.id)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    selected={isItemSelected}
+                  >
 
-                  <TableCell padding="checkbox">
-                        <Checkbox
+                    <TableCell padding="checkbox">
+                      <Checkbox
 
-                          size="small"
-                          checked={isItemSelected}
+                        size="small"
+                        checked={isItemSelected}
 
-                        />
-                      </TableCell>
-                  <TableCell className={classes.tableCellID} align="left">{'#' + row.id}</TableCell>
-                  <TableCell align="left">{row.customer.fname}</TableCell>
-                  <TableCell align="left">{row.status.replace("_", " ")}</TableCell>
-                  <TableCell align="left">{row.supplier}</TableCell>
-                  <TableCell align="left">{moment(row.created_at).format("MMMM D,h:mma,YYYY")}</TableCell>
-                </TableRow>
-              )}
+                      />
+                    </TableCell>
+                    <TableCell className={classes.tableCellID} align="left">{'#' + row.id}</TableCell>
+                    <TableCell align="left">{row.customer.fname}</TableCell>
+                    <TableCell align="left">{row.status.replace("_", " ")}</TableCell>
+                    <TableCell align="left">{row.supplier}</TableCell>
+                    <TableCell align="left">{moment(row.created_at).format("MMMM D,h:mma,YYYY")}</TableCell>
+                  </TableRow>
+                )
+              }
               )
 
             }
