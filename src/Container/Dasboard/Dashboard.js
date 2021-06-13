@@ -3,8 +3,12 @@ import Sidebar from '../../Components/Sidebar/Sidebar' ;
 import './Dashboard.css'
 import MainTable from '../../Components/Main/Table.js'
 import axios from 'axios'
+
+
 function Dashboard() {
   const [requests,setRequests] = useState([]);
+
+
   const fetchRequets = async () => {
     try{
       const response =  await axios.get('https://o53hpo7bf9.execute-api.us-west-2.amazonaws.com/dev/orders');
@@ -19,6 +23,24 @@ function Dashboard() {
   useEffect(() => {
     fetchRequets()
   }, [])
+
+  const handleFiltering = (filterRows) => {
+    if(filterRows){
+      let newFilteredRows = []
+       requests.map((row) => {
+          if((row.total >= 2000) && (row.total <= 3000) ){
+            newFilteredRows.push(row);
+          }
+       })
+
+       setRequests(newFilteredRows);
+    }
+    else{
+      fetchRequets()
+    } ;
+  }
+
+
   // axios({
   //   method: 'get',
   //   url: 'https://o53hpo7bf9.execute-api.us-west-2.amazonaws.com/dev/orders',
@@ -33,7 +55,8 @@ function Dashboard() {
   return (
     <div className='dashboardnav'>
         <Sidebar></Sidebar>
-        <MainTable rows={requests}></MainTable>
+
+        <MainTable rows={requests} filterFunction={handleFiltering}></MainTable>
     </div>
   );
 }
