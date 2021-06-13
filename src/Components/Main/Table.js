@@ -32,14 +32,14 @@ const headCells = [
   { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
 ];
 
-function MainTable({ rows , filterFunction}) {
+function MainTable({ rows, filterFunction , selectedElements,setSelectedItem}) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [nextArrow, setNextArrow] = useState(false);
   const [backArrow, setBackArrow] = useState(true);
   const [sortRow, setSortRow] = useState(false);
-  const [sortSelectValue , setSortSelectValue] = useState("");
+  const [sortSelectValue, setSortSelectValue] = useState("");
   const [filterRows, setFilterRows] = useState(false);
-  const [filerSelectValue , setFilterSelectValue] = useState("");
+  const [filerSelectValue, setFilterSelectValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
 
@@ -59,21 +59,21 @@ function MainTable({ rows , filterFunction}) {
   }
 
   //on selecting sorting option
-  const handleSortOption = (event)=>{
-      if(event.target.value === 'sortasc'){
-        setSortRow(true);
-        setSortSelectValue(event.target.value);
-      }else{
-        setSortRow(false);
-        setSortSelectValue('');
-      }
+  const handleSortOption = (event) => {
+    if (event.target.value === 'sortasc') {
+      setSortRow(true);
+      setSortSelectValue(event.target.value);
+    } else {
+      setSortRow(false);
+      setSortSelectValue('');
+    }
   }
 
   //table pagination
 
-  const rowsAfterSorting = (filteredRows) =>{
+  const rowsAfterSorting = (filteredRows) => {
     console.log("alaaaaa " + sortRow);
-    if(sortRow){
+    if (sortRow) {
       console.log("sortttttt " + sortRow);
       return stableSort(filteredRows, getComparator('supplier'));
 
@@ -109,7 +109,7 @@ function MainTable({ rows , filterFunction}) {
 
     }
     else {
-      if ( rows.length < (newPage * 8)) {
+      if (rows.length < (newPage * 8)) {
         setBackArrow(false);
         setNextArrow(true);
 
@@ -123,13 +123,13 @@ function MainTable({ rows , filterFunction}) {
   };
   //filtering rows
   const handleFiltering = (event) => {
-    event.target.value === 'totalFilter' ? setFilterRows(true) : setFilterRows(false) ;
-    event.target.value === 'totalFilter' ? filterFunction(true) : filterFunction(false)  ;
+    event.target.value === 'totalFilter' ? setFilterRows(true) : setFilterRows(false);
+    event.target.value === 'totalFilter' ? filterFunction(true) : filterFunction(false);
     setFilterSelectValue(event.target.value);
     handlePagingAfterFiltering();
   }
 
-  const handlePagingAfterFiltering = ()=>{
+  const handlePagingAfterFiltering = () => {
     setCurrentPage(1);
     if (currentPage === 1) {
       setBackArrow(true);
@@ -138,7 +138,7 @@ function MainTable({ rows , filterFunction}) {
     }
     else {
 
-      if ( rows.length < (currentPage * 8)) {
+      if (rows.length < (currentPage * 8)) {
         setBackArrow(false);
         setNextArrow(true);
 
@@ -160,20 +160,25 @@ function MainTable({ rows , filterFunction}) {
     });
     return stabilizedThis.map((el) => el[0]);
   }
+  const getFlag = (rowID) => {
+    console.log("flag" + selectedElements[rowID]);
+    return selectedElements[rowID];
+  }
   //styles
   const useStyles = makeStyles({
     tableContainer: {
+      width: '900px',
       "& thead th": {
         fontFamily: 'Poppins',
         fontWeight: 400,
         color: '#334D6E',
-        fontSize: '13px',
+        fontSize: '10px',
       },
       "& tbody td": {
         fontFamily: 'Poppins',
         fontWeight: 400,
         color: '#707683',
-        fontSize: '13px',
+        fontSize: '10px',
 
       },
       "& tbody tr:hover": {
@@ -188,14 +193,32 @@ function MainTable({ rows , filterFunction}) {
       color: "#323C47",
       fontFamily: 'Poppins',
       fontWeight: 400,
-      fontSize: '13px',
+      fontSize: '10px',
     },
     tablePaginationCaption: {
       display: 'none'
     }
 
   });
+  const handleSelectedItem = (event,itemID) => {
+    setSelectedItem(itemID);
+    //console.log(selectedElements[id] + " mmmmmmmmmmmmmmm");
+    // setSelectedItem({...selectedElements , [event.target.id]: event.target.checked})
+    // const handleChange = (event) => {
+    //   setState({ ...state, [event.target.name]: event.target.checked });
+    // };
+  }
+  const getSelectedElementValue = (id) => {
+    console.log('llo' + id)
+     selectedElements.map((selectedElement) => {
+       if(selectedElement.id == id){
+         console.log('llooooolllllly ' + selectedElement.id +"   " + selectedElement.selected)
+         return selectedElement.selected ;
+       }
+     })
+     return false;
 
+  }
   const classes = useStyles();
 
   return (
@@ -225,11 +248,6 @@ function MainTable({ rows , filterFunction}) {
 
       </div>
 
-
-
-
-
-
       <TableContainer className={classes.tableContainer} component={Paper}>
         <Table aria-label="simple table" >
 
@@ -239,41 +257,53 @@ function MainTable({ rows , filterFunction}) {
                 <Checkbox size="small" disabled inputProps={{ 'aria-label': 'disabled checkbox' }} />
               </TableCell>
               {headCells.map((headCell) => (
-                <TableCell
-                  key={headCell.id}
-                  align={'left'}
-                >
-                  {headCell.label}
-                </TableCell>
+
+                  <TableCell
+                    key={headCell.id}
+                    align={'left'}
+                  >
+                    {headCell.label}
+                  </TableCell>
+
               ))}
+
             </TableRow>
           </TableHead>
           <TableBody>
             {
 
-                  console.log(rowsAfterPagingAndSorting())
+              console.log('ssssssssssssssssss ' + selectedElements)
             }
             {
-              rowsAfterPagingAndSorting().map((row) => (
+              rowsAfterPagingAndSorting().map((row) =>{
+                const isItemSelected = selectedElements[row.id]? true : false;
 
-                <TableRow key={row.id}>
+                console.log(" itemmmmmmmmmmmmm " + isItemSelected);
+               return (
+
+                <TableRow key={row.id}
+                onClick={(event) => handleSelectedItem(event,row.id)}
+                role="checkbox"
+                aria-checked={isItemSelected}
+                tabIndex={-1}
+                selected={isItemSelected}
+                >
 
                   <TableCell padding="checkbox">
+                        <Checkbox
 
-                    <Checkbox
-                      size="small"
-                      color="primary"
-                      inputProps={{ 'aria-label': 'secondary checkbox' }}
-                      checked={false}
-                    />
-                  </TableCell>
+                          size="small"
+                          checked={isItemSelected}
+
+                        />
+                      </TableCell>
                   <TableCell className={classes.tableCellID} align="left">{'#' + row.id}</TableCell>
                   <TableCell align="left">{row.customer.fname}</TableCell>
                   <TableCell align="left">{row.status.replace("_", " ")}</TableCell>
                   <TableCell align="left">{row.supplier}</TableCell>
                   <TableCell align="left">{moment(row.created_at).format("MMMM D,h:mma,YYYY")}</TableCell>
                 </TableRow>
-              )
+              )}
               )
 
             }
@@ -283,31 +313,31 @@ function MainTable({ rows , filterFunction}) {
       </TableContainer>
       {console.log('At Table Pagination rows = ' + rows.length)}
       {(rows.length > 8) ?
-      <TablePagination
+        <TablePagination
 
-        nextIconButtonProps={nextArrow ? { disabled: true } : { disabled: false }}
-        backIconButtonProps={backArrow ? { disabled: true } : { disabled: false }}
-        component="div"
-        rowsPerPageOptions={[8]}
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={currentPage}
-        onChangePage={handleChangePage}
-        classes={{
+          nextIconButtonProps={nextArrow ? { disabled: true } : { disabled: false }}
+          backIconButtonProps={backArrow ? { disabled: true } : { disabled: false }}
+          component="div"
+          rowsPerPageOptions={[8]}
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={currentPage}
+          onChangePage={handleChangePage}
+          classes={{
 
-          caption: classes.tablePaginationCaption,
+            caption: classes.tablePaginationCaption,
 
-          // root: classes.tablePagination,
-          // caption: classes.tablePaginationCaption,
-          // selectIcon: classes.tablePaginationSelectIcon,
-          // select: classes.tablePaginationSelect,
-          // actions: classes.tablePaginationActions,
-
-
-        }}
+            // root: classes.tablePagination,
+            // caption: classes.tablePaginationCaption,
+            // selectIcon: classes.tablePaginationSelectIcon,
+            // select: classes.tablePaginationSelect,
+            // actions: classes.tablePaginationActions,
 
 
-      /> : ""}
+          }}
+
+
+        /> : ""}
     </div>
   );
 }
