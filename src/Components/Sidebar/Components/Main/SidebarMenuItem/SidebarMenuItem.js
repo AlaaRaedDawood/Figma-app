@@ -16,7 +16,7 @@ function SidebarMenuItem({ item }) {
 
       <div className='item'>
         <span className="itemIcon">{subnav ? item.iconHover : item.icon}</span>
-        <p className="itemTitle">{item.title}</p>
+        <p className={subnav? "itemTitleHover" : "itemTitle"}>{item.title}</p>
       </div>
 
       <div className='subItem'>

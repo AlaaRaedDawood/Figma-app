@@ -1,5 +1,5 @@
 .breakLine{
-  border: 1em solid black;
+  border-top: 1px solid black;
 }
 .settingsDiv{
   display: flex;
@@ -7,7 +7,11 @@
   justify-content: flex-start;
   align-items: flex-start;
   position: relative;
-  left: -20px;
+  left: 60px;
+}
+.settingsDiv :hover{
+ color: black;
+ cursor: pointer;
 }
 .logoutDiv{
   display: flex;
@@ -18,3 +22,28 @@
   bottom: 0px;
   left: 55px;
 }
+.logoutDiv :hover{
+  cursor: pointer;
+}
+.itemTitle{
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight:500;
+  font-style: normal;
+  letter-spacing: 0.01em;
+  color: #334D6E;
+  padding: 0;
+  margin: 0;
+  margin-left: 4px;
+}
+.itemTitleHover{
+  color: black;
+}
+.container {
+  display: flex;
+  flex-direction: column ;
+  align-items: center;
+  margin-top: 10px;
+
+}
+
