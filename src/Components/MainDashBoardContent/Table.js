@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
 import './MainTable.css'
 import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,6 +15,8 @@ import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+
 // import DeleteIcon from '@material-ui/icons/Delete';
 // import FilterListIcon from '@material-ui/icons/FilterList';
 const headCells = [
@@ -26,7 +27,7 @@ const headCells = [
   { id: 'created_at', numeric: false, disablePadding: false, label: 'Created At' },
 ];
 
-function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, setSearchChange }) {
+function MainTable({ rows, filterFunction, selectedElements, getCountSelectedElements, setSelectedItem, setSearchChange }) {
   const [nextArrow, setNextArrow] = useState(false);
   const [backArrow, setBackArrow] = useState(true);
   const [selectColumn, setSelectColumn] = useState(false);
@@ -42,7 +43,8 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
 
   //Search
   const handleSearchChange = (event) => {
-    setSearchChange((event.target.value).toLowerCase());
+    console.log("colummmmmmmmmmmmnnnnnnnnnnnnnnnnn in " + selectColumnLabel)
+    setSearchChange((event.target.value).toLowerCase(), selectColumnLabel);
   };
 
 
@@ -115,16 +117,24 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
       }
 
     }
-    setOrderBy('');
-    setSelectColumn(false);
-    setSelectColumnLabel('');
+    // setOrderBy('');
+    // setSelectColumn(false);
+    // setSelectColumnLabel('');
   }
   const handleSort = (headCellID) => {
-    if (order) {
+    if (orderBy == headCellID) {
+      setOrderBy('');
+      setSelectColumn(false);
+      setSelectColumnLabel('');
+
+    } else {
       setOrderBy(headCellID);
       setSelectColumn(true);
       setSelectColumnLabel(headCellID)
+
     }
+
+
 
 
 
@@ -132,7 +142,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
   //table pagination
 
   const rowsAfterSorting = (rows) => {
-    if (selectColumn) {
+    if (selectColumn && order) {
       const results = stableSort(rows, getComparator(order, orderBy));
       console.log("sort results " + JSON.stringify(results));
       return results;
@@ -186,6 +196,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
     event.target.value === 'totalFilter' ? filterFunction(true) : filterFunction(false);
     setFilterSelectValue(event.target.value);
     handlePagingAfterFiltering();
+
   }
 
   const handlePagingAfterFiltering = () => {
@@ -273,7 +284,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
       },
       "& tbody tr:hover": {
         cursor: 'pointer',
-        backgroundColor: '#F3F7FB'
+        backgroundColor: '#B5E3FA'
 
 
       }
@@ -289,27 +300,28 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
       display: 'none'
     },
     tableRowSelected: {
-      backgroundColor: '#F3F7FB'
+      backgroundColor: '#B5E3FA'
+
     },
     tableRowPending: {
-      backgroundColor: '#B5E3FA'
+      backgroundColor: '#F3F7FB'
     }
 
   });
   const handleSelectedItem = (event, itemID) => {
     setSelectedItem(itemID);
   }
-  const getSelectedElementValue = (id) => {
-    console.log('llo' + id)
-    selectedElements.map((selectedElement) => {
-      if (selectedElement.id == id) {
-        console.log('llooooolllllly ' + selectedElement.id + "   " + selectedElement.selected)
-        return selectedElement.selected;
-      }
-    })
-    return false;
+  // const getSelectedElementValue = (id) => {
+  //   console.log('llo' + id)
+  //   selectedElements.map((selectedElement) => {
+  //     if (selectedElement.id == id) {
+  //       console.log('llooooolllllly ' + selectedElement.id + "   " + selectedElement.selected)
+  //       return selectedElement.selected;
+  //     }
+  //   })
+  //   return false;
 
-  }
+  // }
   const classes = useStyles();
 
 
@@ -320,7 +332,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
 
         <InputBase
           className={classes.input}
-          placeholder="Search"
+          placeholder="Search By Contact"
           inputProps={{ 'aria-label': 'search google maps' }}
           onChange={handleSearchChange}
         />
@@ -335,35 +347,47 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
 
         <span className="sortOrderOptions">
           Filters:
-          <select name="filter" id="filters" onChange={handleFiltering} value={filerSelectValue}>
-            <option value=""> Click Here </option>
+          <select name="filter" id="filters" style={{ cursor: "pointer" }} onChange={handleFiltering} value={filerSelectValue}>
+            <option value=""> No Filter </option>
             <option value="totalFilter">Total: $2000-3000</option>
-
           </select>
           <i class="fas fa-caret-down"></i>
         </span>
         <span className="sortOrderOptions">
           Sort by:
-          <select name="sort" id="sort" onChange={handleSortOption} value={sortSelectValue}>
+          <select name="sort" id="sort" style={{ cursor: "pointer" }} onChange={handleSortOption} value={sortSelectValue}>
             <option value="">No Sort</option>
             <option value="asc">ASC</option>
             <option value="desc">DESC</option>
           </select>
           <i class="fas fa-caret-down"></i>
+
         </span>
-
-
+        {/* <IconButton style={{float:"right" , position:'relative' , left:'330px' , top:'-10px'}} onClick={()=> setFilterDivAppear(!filterDivAppear)}>
+          <AddBoxIcon style={{fontSize:"small" , fill:"blue"}} />
+        </IconButton> */}
 
         <TableContainer className={classes.tableContainer} component={Paper}>
           <Table aria-label="simple table" >
 
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
+
+                {getCountSelectedElements() > 0 ?
+                  <div className="selectedDiv">
+                    <p style={{ color: "blue", width: "100px", backgroundColor: "transparent" ,fontSize:"15px",marginLeft:"5px"}}>
+                      {getCountSelectedElements()} are selected
+
+                    </p>
+                    <IconButton style={{ position:"relative" ,left:"750px"  , float:"right"}}>  <DeleteOutlineIcon style={{fill:"black"}}/></IconButton>
+                  </div>
+                  : ""}
+                {getCountSelectedElements() == 0 ? <TableCell padding="checkbox">
                   <Checkbox size="small" disabled inputProps={{ 'aria-label': 'disabled checkbox' }} />
-                </TableCell>
-                {headCells.map((headCell) => {
-                  return (selectColumn && (selectColumnLabel === headCell.id)?
+                </TableCell> : ""}
+
+                {getCountSelectedElements() == 0 ? headCells.map((headCell) => {
+                  return (selectColumn && (selectColumnLabel === headCell.id) ?
 
 
 
@@ -395,15 +419,12 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
                     </TableCell>
 
                   )
-                })}
+                }) : ""}
 
               </TableRow>
             </TableHead>
             <TableBody>
-              {
 
-                // console.log('ssssssssssssssssss ' + selectedElements)
-              }
               {
                 rowsAfterPagingAndSorting().map((row) => {
                   const isItemSelected = selectedElements[row.id] ? true : false;
@@ -465,6 +486,30 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
 
           /> : ""}
       </div>
+
+      {//filterDivAppear ?
+        // <div>
+        //   <h1 style={{color:'blue'}}>Filter</h1>
+        //   <form>
+        //     <select>
+        //       <option value="id"> id </option>
+        //       <option value="created_at">created at</option>
+        //       <option value="status">Total: $2000-3000</option>
+        //       <option value="totalFilter">Total: $2000-3000</option>
+        //       <option value="totalFilter">Total: $2000-3000</option>
+        //     </select>
+        //     <label>From</label>
+        //     <input type="text"></input>
+        //     <br/>
+        //     <label>to</label>
+        //     <input type="text"></input>
+        //     <br/>
+        //     <button>submit</button>
+        //   </form>
+        // </div>
+        // : ""
+      }
+
     </div>
   );
 }

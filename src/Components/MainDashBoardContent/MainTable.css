@@ -11,7 +11,11 @@
 
 
 }
+.selectedDiv{
 
+   display:flex ;
+   flex-direction : row ;
+}
 
 span{
   float: left;

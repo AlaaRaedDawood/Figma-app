@@ -3,7 +3,7 @@ import Sidebar from '../../Components/Sidebar/Sidebar';
 import './Dashboard.css'
 import MainTable from '../../Components/MainDashBoardContent/Table.js'
 import axios from 'axios'
-
+import moment from 'moment'
 
 function Dashboard() {
   const [requests, setRequests] = useState([]);
@@ -14,7 +14,6 @@ function Dashboard() {
   const fetchRequets = async () => {
     try {
       const response = await axios.get('https://o53hpo7bf9.execute-api.us-west-2.amazonaws.com/dev/orders');
-      console.log("helloo" + response.data);
       setRequests(response.data.orders);
       setAllRequests(response.data.orders);
       createSelectedElements(response.data.orders);
@@ -34,41 +33,73 @@ function Dashboard() {
   const setSelectedItem = (itemID) => {
     let flag = ! selectedElements[itemID] ;
     setSelectedElements({ ...selectedElements, [itemID]: flag });
-    console.log( itemID + " ====  " + flag );
+
+  }
+  const getCountSelectedElements = () => {
+    let count = 0 ;
+    for (var element in selectedElements) {
+      if (selectedElements[element]) {
+          count +=  1
+      }
+  }
+  return count ;
 
   }
   const createSelectedElements = (requestItems) => {
-    console.log('item ' + requestItems.length);
     const newSelectedElements = {} ;
     requestItems.map(requestrequestItem => {
-      console.log('item 222222 ' + requestrequestItem.id);
       newSelectedElements[requestrequestItem.id] = false ;
 
 
     })
     setSelectedElements(newSelectedElements);
-    console.log('item 1111111111 ' + newSelectedElements[1]);
 
   }
 
   //searchRows
-  const handleSearchChange = (name) => {
-    if (name) {
-      let newRows = []
-      allrequests.map((row) => {
-        const currentName = (row.customer.fname + " " + row.customer.lname).toLowerCase() ;
-        if (currentName.includes(name)) {
-          newRows.push(row);
-        }
-      })
+  const handleSearchChange = (userInput , column) => {
 
-      setRequests(newRows);
+
+    if(column){
+
+      if (userInput) {
+        let newRows = []
+        allrequests.map((row) => {
+          const datestring = moment(row[column]).format("MMMM D,h:mma,YYYY") ;
+
+          console.log("colummmmmmmmmmmmnnnnnnnnnnnnnnnnn "  + datestring);
+          const currentInput =  column == 'date' ? (moment(row[column]).format("MMMM D,h:mma,YYYY") + " " ).toLowerCase() : (row[column] + " " ).toLowerCase();
+          console.log("fffff "+currentInput);
+          if (currentInput.includes(userInput)) {
+            newRows.push(row);
+          }
+        })
+
+        setRequests(newRows);
+      }
+    }else{
+      if (userInput) {
+        let newRows = []
+        allrequests.map((row) => {
+          const currentName = (row.customer.fname + " " ).toLowerCase() ;
+          if (currentName.includes(userInput)) {
+            newRows.push(row);
+          }
+        })
+
+        setRequests(newRows);
+      }
+      else {
+        fetchRequets()
+      };
     }
-    else {
-      fetchRequets()
-    };
+
+
   }
   //filterRows
+  const addfilterOptions = (column , from , to) => {
+
+  }
   const handleFiltering = (filterRows) => {
     if (filterRows) {
       let newFilteredRows = []
@@ -90,16 +121,21 @@ function Dashboard() {
 
 
 
+
   return (
     <div className='dashboardnav'>
       <Sidebar></Sidebar>
 
       <MainTable
       rows={requests}
+
+      addfilterOptions= {addfilterOptions}
       filterFunction={handleFiltering}
       selectedElements={selectedElements}
+      getCountSelectedElements={getCountSelectedElements}
       setSelectedItem={setSelectedItem}
-      setSearchChange={handleSearchChange} />
+      setSearchChange={handleSearchChange}
+       />
     </div>
   );
 }
