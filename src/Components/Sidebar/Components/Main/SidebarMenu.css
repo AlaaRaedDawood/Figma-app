@@ -1,0 +1,20 @@
+.breakLine{
+  border: 1em solid black;
+}
+.settingsDiv{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: relative;
+  left: -20px;
+}
+.logoutDiv{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: absolute;
+  bottom: 0px;
+  left: 55px;
+}

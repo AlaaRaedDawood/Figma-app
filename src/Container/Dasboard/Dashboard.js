@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../../Components/Sidebar/Sidebar';
 import './Dashboard.css'
-import MainTable from '../../Components/Main/Table.js'
+import MainTable from '../../Components/MainDashBoardContent/Table.js'
 import axios from 'axios'
 
 

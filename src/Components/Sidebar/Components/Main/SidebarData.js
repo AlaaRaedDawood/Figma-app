@@ -1,33 +1,30 @@
 import React from "react";
-// import dashboard from '../../../../Assets/icon/dashboard.svg'
-  
+import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
+//orders
+import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
+//users
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+//request
+import ViewAgendaOutlinedIcon from '@material-ui/icons/ViewAgendaOutlined';
+//boxes
+import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined';
 export const SidebarData = [
   {
     title: "Dashboard",
-    //path: "/about-us",
-    // icon: <AiIcons.AiFillHome />,
-    imgsrc : "../../../../../Assets/icon/menu/dashboard.svg",
-  
-    subNav: [
-    ],
+     iconHover: <DashboardOutlinedIcon style={{fill: "black"}} />,
+     icon: <DashboardOutlinedIcon style={{fill: "grey"}} />,
+    subNav: [],
   },
   {
     title: "Requests",
-    // path: "/about-us",
-    //icon: <AiIcons.AiFillHome />,
-    imgsrc : "../../../../Assets/icon/dashboard.svg",
-  
-  
+    iconHover: <ViewAgendaOutlinedIcon style={{fill: "black"}} />,
+    icon: <ViewAgendaOutlinedIcon style={{fill: "grey"}} />,
     subNav: [
       {
-        title: "Pending",
-        // path: "/about-us/aim",
-        //icon: <IoIcons.IoIosPaper />,
+        title: "Pending"
       },
       {
-        title: "Confirmed",
-        // path: "/about-us/vision",
-       // icon: <IoIcons.IoIosPaper />,
+        title: "Confirmed"
       },
       {
           title:"All Requests"
@@ -36,73 +33,48 @@ export const SidebarData = [
   },
   {
     title: "Users",
-    // path: "/about-us",
-    //icon: <AiIcons.AiFillHome />,
-    imgsrc : "../../../../Assets/icon/dashboard.svg",
-  
-  
+    iconHover: <PersonOutlineIcon style={{fill: "black"}} />,
+    icon: <PersonOutlineIcon style={{fill: "grey"}} />,
     subNav: [
       {
-        title: "Customers",
-        // path: "/about-us/aim",
-        //icon: <IoIcons.IoIosPaper />,
+        title: "Customers"
       },
       {
-        title: "Admins",
-        // path: "/about-us/vision",
-        //icon: <IoIcons.IoIosPaper />,
+        title: "Admins"
       },
       ,
       {
-        title: "Ordering",
-        // path: "/about-us/vision",
-        //icon: <IoIcons.IoIosPaper />,
+        title: "Ordering"
       },
       ,
       {
-        title: "Warehouse",
-        // path: "/about-us/vision",
-        //icon: <IoIcons.IoIosPaper />,
+        title: "Warehouse"
       },
       ,
       {
-        title: "Accounting",
-        // path: "/about-us/vision",
-        //icon: <IoIcons.IoIosPaper />,
+        title: "Accounting"
       },
     ],
   },
   {
     title: "Boxes",
-    // path: "/about-us",
-    //icon: <AiIcons.AiFillHome />,
-    imgsrc : "../../../../Assets/icon/dashboard.svg",
-  
-  
+    iconHover: <InboxOutlinedIcon style={{fill: "black"}} />,
+    icon: <InboxOutlinedIcon style={{fill: "grey"}} />,
     subNav: [] ,
   },
   {
     title: "Orders",
-    // path: "/about-us",
-    // icon: <AiIcons.AiFillHome />,
-    imgsrc : "../../../../Assets/icon/dashboard.svg",
-  
-  
+    iconHover: <ChatBubbleOutlineIcon style={{fill: "black"}} />,
+    icon: <ChatBubbleOutlineIcon style={{fill: "grey"}} />,
     subNav: [
       {
-        title: "Pending",
-        // path: "/about-us/aim",
-        //icon: <IoIcons.IoIosPaper />,
+        title: "Pending"
       },
       {
-        title: "Confirmed",
-        // path: "/about-us/vision",
-        //icon: <IoIcons.IoIosPaper />,
+        title: "Confirmed"
       },
       {
-        title: "All Orders",
-        // path: "/about-us/vision",
-        //icon: <IoIcons.IoIosPaper />,
+        title: "All Orders"
       },
     ],
   }

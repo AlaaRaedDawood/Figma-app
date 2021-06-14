@@ -188,9 +188,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
       flex: 1,
     },
     iconButton: {
-      padding: 10,
-      position: 'relative',
-      left: '650px'
+      padding: 10
 
 
     },
@@ -233,7 +231,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
 
 
       }
-   }
+    }
     ,
     tableCellID: {
       color: "#323C47",
@@ -302,9 +300,8 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
         <span className="sortOrderOptions">
           Sort by:
           <select name="sort" id="sort" onChange={handleSortOption} value={sortSelectValue}>
-            <option value=""> Click Here </option>
+            <option value=""> Click Here  </option>
             <option value="sortasc">Supplier:A to Z</option>
-
           </select>
           <i class="fas fa-caret-down"></i>
         </span>
@@ -343,7 +340,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
               {
                 rowsAfterPagingAndSorting().map((row) => {
                   const isItemSelected = selectedElements[row.id] ? true : false;
-                  const rowStyle = (row.status === "pending_confirmation") ? classes.tableRowPending  : "" ;
+                  const rowStyle = (row.status === "pending_confirmation") ? classes.tableRowPending : "";
                   return (
 
                     <TableRow
