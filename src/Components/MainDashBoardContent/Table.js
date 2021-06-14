@@ -43,7 +43,6 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
 
   //Search
   const handleSearchChange = (event) => {
-    console.log("colummmmmmmmmmmmnnnnnnnnnnnnnnnnn in " + selectColumnLabel)
     setSearchChange((event.target.value).toLowerCase(), selectColumnLabel);
   };
 
@@ -60,7 +59,6 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
       if (orderBy === 'created_at') {
         aString = a[orderBy];
         bString = b[orderBy];
-        console.log('sort descendingComparator ' + orderBy + " " + aString + " with " + bString + " compare ");
       }
       else {
 
@@ -71,16 +69,12 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
 
     }
 
-
     if (bString < aString) {
-      //console.log('sort descendingComparator ' + aString + " with " + bString + " compare -1 ");
       return -1;
     }
     if (bString > aString) {
-      // console.log('sort descendingComparator ' + aString + " with " + bString + " compare 1 ");
       return 1;
     }
-    //console.log('sort descendingComparator ' + aString + " with " + bString + " compare 0 ");
     return 0;
   }
 
@@ -94,11 +88,9 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
       const order = comparator(a[0], b[0]);
-      console.log('sort is done ' + JSON.stringify(a[0]) + " " + JSON.stringify(b[0]) + " result = " + order);
       if (order !== 0) return order;
       return a[1] - b[1];
     });
-    console.log('sort not done')
     return stabilizedThis.map((el) => el[0]);
   }
 
@@ -144,7 +136,6 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
   const rowsAfterSorting = (rows) => {
     if (selectColumn && order) {
       const results = stableSort(rows, getComparator(order, orderBy));
-      console.log("sort results " + JSON.stringify(results));
       return results;
     }
     return rows;
@@ -153,7 +144,6 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
     const sortedRowsResult = rowsAfterSorting(rows);
-    console.log("ready to page " + JSON.stringify(sortedRowsResult));
     if (indexOfFirstRow < rows.length) {
       if (indexOfLastRow > rows.length) {
 
@@ -311,17 +301,7 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
   const handleSelectedItem = (event, itemID) => {
     setSelectedItem(itemID);
   }
-  // const getSelectedElementValue = (id) => {
-  //   console.log('llo' + id)
-  //   selectedElements.map((selectedElement) => {
-  //     if (selectedElement.id == id) {
-  //       console.log('llooooolllllly ' + selectedElement.id + "   " + selectedElement.selected)
-  //       return selectedElement.selected;
-  //     }
-  //   })
-  //   return false;
 
-  // }
   const classes = useStyles();
 
 
@@ -332,7 +312,7 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
 
         <InputBase
           className={classes.input}
-          placeholder="Search By Contact"
+          placeholder="Search By Customer Name"
           inputProps={{ 'aria-label': 'search google maps' }}
           onChange={handleSearchChange}
         />
@@ -375,11 +355,11 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
 
                 {getCountSelectedElements() > 0 ?
                   <div className="selectedDiv">
-                    <p style={{ color: "blue", width: "100px", backgroundColor: "transparent" ,fontSize:"15px",marginLeft:"5px"}}>
+                    <p style={{ color: "blue", width: "100px", backgroundColor: "transparent", fontSize: "15px", marginLeft: "5px" }}>
                       {getCountSelectedElements()} are selected
 
                     </p>
-                    <IconButton style={{ position:"relative" ,left:"750px"  , float:"right"}}>  <DeleteOutlineIcon style={{fill:"black"}}/></IconButton>
+                    <IconButton style={{ position: "relative", left: "750px", float: "right" }}>  <DeleteOutlineIcon style={{ fill: "black" }} /></IconButton>
                   </div>
                   : ""}
                 {getCountSelectedElements() == 0 ? <TableCell padding="checkbox">
@@ -464,7 +444,6 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
             </TableBody>
           </Table>
         </TableContainer>
-        {console.log('At Table Pagination rows = ' + rows.length)}
         {(rows.length > 8) ?
           <TablePagination
 

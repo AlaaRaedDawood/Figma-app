@@ -31,24 +31,24 @@ function Dashboard() {
   }, [])
 
   const setSelectedItem = (itemID) => {
-    let flag = ! selectedElements[itemID] ;
+    let flag = !selectedElements[itemID];
     setSelectedElements({ ...selectedElements, [itemID]: flag });
 
   }
   const getCountSelectedElements = () => {
-    let count = 0 ;
+    let count = 0;
     for (var element in selectedElements) {
       if (selectedElements[element]) {
-          count +=  1
+        count += 1
       }
-  }
-  return count ;
+    }
+    return count;
 
   }
   const createSelectedElements = (requestItems) => {
-    const newSelectedElements = {} ;
+    const newSelectedElements = {};
     requestItems.map(requestrequestItem => {
-      newSelectedElements[requestrequestItem.id] = false ;
+      newSelectedElements[requestrequestItem.id] = false;
 
 
     })
@@ -57,19 +57,15 @@ function Dashboard() {
   }
 
   //searchRows
-  const handleSearchChange = (userInput , column) => {
+  const handleSearchChange = (userInput, column) => {
 
 
-    if(column){
+    if (column) {
 
       if (userInput) {
         let newRows = []
         allrequests.map((row) => {
-          const datestring = moment(row[column]).format("MMMM D,h:mma,YYYY") ;
-
-          console.log("colummmmmmmmmmmmnnnnnnnnnnnnnnnnn "  + datestring);
-          const currentInput =  column == 'date' ? (moment(row[column]).format("MMMM D,h:mma,YYYY") + " " ).toLowerCase() : (row[column] + " " ).toLowerCase();
-          console.log("fffff "+currentInput);
+          const currentInput = column == 'date' ? (moment(row[column]).format("MMMM D,h:mma,YYYY") + " ").toLowerCase() : (row[column] + " ").toLowerCase();
           if (currentInput.includes(userInput)) {
             newRows.push(row);
           }
@@ -77,11 +73,11 @@ function Dashboard() {
 
         setRequests(newRows);
       }
-    }else{
+    } else {
       if (userInput) {
         let newRows = []
         allrequests.map((row) => {
-          const currentName = (row.customer.fname + " " ).toLowerCase() ;
+          const currentName = (row.customer.fname + " ").toLowerCase();
           if (currentName.includes(userInput)) {
             newRows.push(row);
           }
@@ -97,7 +93,7 @@ function Dashboard() {
 
   }
   //filterRows
-  const addfilterOptions = (column , from , to) => {
+  const addfilterOptions = (column, from, to) => {
 
   }
   const handleFiltering = (filterRows) => {
@@ -127,15 +123,15 @@ function Dashboard() {
       <Sidebar></Sidebar>
 
       <MainTable
-      rows={requests}
+        rows={requests}
 
-      addfilterOptions= {addfilterOptions}
-      filterFunction={handleFiltering}
-      selectedElements={selectedElements}
-      getCountSelectedElements={getCountSelectedElements}
-      setSelectedItem={setSelectedItem}
-      setSearchChange={handleSearchChange}
-       />
+        addfilterOptions={addfilterOptions}
+        filterFunction={handleFiltering}
+        selectedElements={selectedElements}
+        getCountSelectedElements={getCountSelectedElements}
+        setSelectedItem={setSelectedItem}
+        setSearchChange={handleSearchChange}
+      />
     </div>
   );
 }
