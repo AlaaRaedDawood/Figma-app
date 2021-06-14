@@ -1,6 +1,4 @@
-.breakLine{
-  border-top: 1px solid black;
-}
+
 .settingsDiv{
   display: flex;
   flex-direction: row;
@@ -49,5 +47,8 @@
   flex-direction: column ;
   margin-top: 10px;
 
+}
+.breakLine{
+   border: 1px solid black;
 }
 
