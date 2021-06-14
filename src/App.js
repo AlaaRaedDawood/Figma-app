@@ -4,7 +4,7 @@ import Dashboard from './Container/Dasboard/Dashboard.js'
 function App() {
 
   return (
-    <div className="App">
+    <div>
       <Dashboard></Dashboard>
     </div>
   );

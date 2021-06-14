@@ -446,7 +446,6 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
         </TableContainer>
         {(rows.length > 8) ?
           <TablePagination
-
             nextIconButtonProps={nextArrow ? { disabled: true } : { disabled: false }}
             backIconButtonProps={backArrow ? { disabled: true } : { disabled: false }}
             component="div"
@@ -466,28 +465,6 @@ function MainTable({ rows, filterFunction, selectedElements, getCountSelectedEle
           /> : ""}
       </div>
 
-      {//filterDivAppear ?
-        // <div>
-        //   <h1 style={{color:'blue'}}>Filter</h1>
-        //   <form>
-        //     <select>
-        //       <option value="id"> id </option>
-        //       <option value="created_at">created at</option>
-        //       <option value="status">Total: $2000-3000</option>
-        //       <option value="totalFilter">Total: $2000-3000</option>
-        //       <option value="totalFilter">Total: $2000-3000</option>
-        //     </select>
-        //     <label>From</label>
-        //     <input type="text"></input>
-        //     <br/>
-        //     <label>to</label>
-        //     <input type="text"></input>
-        //     <br/>
-        //     <button>submit</button>
-        //   </form>
-        // </div>
-        // : ""
-      }
 
     </div>
   );

@@ -16,7 +16,6 @@ function SidebarMenu() {
       {SidebarData.map((item, index) => {
         return <SidebarMenuItem item={item} key={index} />;
       })}
-      <hr className="breakLine"></hr>
       <div
         className="settingsDiv"
         onMouseEnter={handleOnMouseEnterSettingsDiv}
