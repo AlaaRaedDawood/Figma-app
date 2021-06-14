@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import './MainTable.css'
 import moment, { normalizeUnits } from 'moment'
-
+import { positions } from '@material-ui/system';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,6 +14,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -22,6 +23,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 // import DeleteIcon from '@material-ui/icons/Delete';
 // import FilterListIcon from '@material-ui/icons/FilterList';
 const headCells = [
@@ -32,7 +37,7 @@ const headCells = [
   { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
 ];
 
-function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) {
+function MainTable({ rows, filterFunction, selectedElements, setSelectedItem , setSearchChange}) {
   const [nextArrow, setNextArrow] = useState(false);
   const [backArrow, setBackArrow] = useState(true);
   const [sortRow, setSortRow] = useState(false);
@@ -41,25 +46,29 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) 
   const [filerSelectValue, setFilterSelectValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+
+
+   //Search
+   const handleSearchChange = (event) => {
+    setSearchChange((event.target.value).toLowerCase());
+  };
 
 
   //table sorting
   function descendingComparator(a, b, orderBy) {
-    console.log('sort descendingComparator ' + JSON.stringify(a['supplier']) +" with " + JSON.stringify(b['supplier']));
+    console.log('sort descendingComparator ' + JSON.stringify(a['supplier']) + " with " + JSON.stringify(b['supplier']));
     const aString = JSON.stringify(a['supplier'])
     const bString = JSON.stringify(b['supplier'])
     // console.log('sort descendingComparator ' + aString +" with " + bString  + " compare " );
-    if ( bString < aString) {
-      console.log('sort descendingComparator ' + aString +" with " + bString  + " compare -1 " );
+    if (bString < aString) {
+      console.log('sort descendingComparator ' + aString + " with " + bString + " compare -1 ");
       return -1;
     }
     if (bString > aString) {
-      console.log('sort descendingComparator ' + aString +" with " + bString  + " compare 1 " );
+      console.log('sort descendingComparator ' + aString + " with " + bString + " compare 1 ");
       return 1;
     }
-    console.log('sort descendingComparator ' + aString +" with " + bString  + " compare 0 " );
+    console.log('sort descendingComparator ' + aString + " with " + bString + " compare 0 ");
     return 0;
   }
 
@@ -73,7 +82,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) 
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
       const order = comparator(a[0], b[0]);
-      console.log('sort is done ' + JSON.stringify(a[0]) +" " + JSON.stringify(b[0]) + " result = " + order);
+      console.log('sort is done ' + JSON.stringify(a[0]) + " " + JSON.stringify(b[0]) + " result = " + order);
       if (order !== 0) return order;
       return a[1] - b[1];
     });
@@ -98,9 +107,9 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) 
     console.log("alaa sort is = " + sortRow);
     if (sortRow) {
       console.log("sortttttt " + sortRow);
-      const results =  stableSort(rows, getComparator('asc' ,'gender'));
+      const results = stableSort(rows, getComparator('asc', 'gender'));
       console.log("sort results " + JSON.stringify(results));
-      return results ;
+      return results;
     }
     return rows;
   }
@@ -175,7 +184,44 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) 
   }
 
   //styles
-  const useStyles = makeStyles({
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      padding: '2px 4px',
+      display: 'flex',
+      alignItems: 'center',
+      width: 950,
+      position: 'relative' ,
+      left: -35
+
+    },
+    input: {
+      marginLeft: theme.spacing(1),
+      flex: 1,
+    },
+    iconButton: {
+      padding: 10,
+      position: 'relative' ,
+      left:'650px'
+
+
+    },
+    textField: {
+      width: '949px',
+      marginBottom: '30px',
+      backgroundColor: 'white',
+      color: 'white',
+      paddingBottom: 0,
+      marginTop: '0px',
+      marginLeft: '0px',
+      fontWeight: 500,
+      display: 'flex',
+      height: '60px',
+      position: 'relative',
+      left: '-35px',
+      borderColor: 'transparent',
+      fontSize: '10px'
+
+    },
     tableContainer: {
       width: '900px',
       "& thead th": {
@@ -209,7 +255,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) 
       display: 'none'
     }
 
-  });
+  }));
   const handleSelectedItem = (event, itemID) => {
     setSelectedItem(itemID);
     //console.log(selectedElements[id] + " mmmmmmmmmmmmmmm");
@@ -231,16 +277,32 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) 
   }
   const classes = useStyles();
 
+
   return (
     <div className='main-table'>
-      <div>
+      {/* <TextField className={classes.textField}  id="outlined-search" size="small" label="Search field" type="search" variant="outlined" /> */}
+      <Paper component="form" className={classes.root}>
+        <SearchIcon disabled="true" disableRipple="true" disableFocusRipple="true" />
+
+        <InputBase
+          className={classes.input}
+          placeholder="Search"
+          inputProps={{ 'aria-label': 'search google maps' }}
+          onChange= {handleSearchChange}
+        />
+        <IconButton color="primary" className={classes.iconButton} aria-label="directions">
+          <NotificationsNoneIcon />
+        </IconButton>
+      </Paper>
+
+      <div className="mainDashboard">
         <span>Requests</span>
 
 
         <span className="sortOrderOptions">
           Filters:
           <select name="filter" id="filters" onChange={handleFiltering} value={filerSelectValue}>
-            <option value=""> {" " + "_" + " "} </option>
+            <option value=""> Click Here </option>
             <option value="totalFilter">Total: $2000-3000</option>
 
           </select>
@@ -249,14 +311,14 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) 
         <span className="sortOrderOptions">
           Sort by:
           <select name="sort" id="sort" onChange={handleSortOption} value={sortSelectValue}>
-            <option value=""> {" " + "_" + " "} </option>
+            <option value=""> Click Here </option>
             <option value="sortasc">Supplier:A to Z</option>
 
           </select>
           <i class="fas fa-caret-down"></i>
         </span>
 
-      </div>
+
 
       <TableContainer className={classes.tableContainer} component={Paper}>
         <Table aria-label="simple table" >
@@ -272,10 +334,10 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) 
                   key={headCell.id}
                   align={'left'}
                 >
-                  <TableSortLabel>
-                  {headCell.label}
 
-                  </TableSortLabel>
+                    {headCell.label}
+
+
                 </TableCell>
 
               ))}
@@ -351,6 +413,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem }) 
 
 
         /> : ""}
+        </div>
     </div>
   );
 }
