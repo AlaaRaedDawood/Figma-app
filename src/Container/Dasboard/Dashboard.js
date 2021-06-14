@@ -60,7 +60,7 @@ function Dashboard() {
   const handleSearchChange = (userInput, column) => {
 
 
-    if (column) {
+    if (column && (column !== 'name')) {
 
       if (userInput) {
         let newRows = []
@@ -74,6 +74,13 @@ function Dashboard() {
         setRequests(newRows);
       }
     } else {
+      handleSearchByName(userInput);
+    }
+
+
+  }
+  //handle search by name
+  const handleSearchByName = (userInput) => {
       if (userInput) {
         let newRows = []
         allrequests.map((row) => {
@@ -88,7 +95,7 @@ function Dashboard() {
       else {
         fetchRequets()
       };
-    }
+
 
 
   }
