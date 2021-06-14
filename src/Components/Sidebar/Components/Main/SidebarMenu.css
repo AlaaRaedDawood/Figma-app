@@ -35,14 +35,15 @@
   padding: 0;
   margin: 0;
   margin-left: 4px;
+  transition: font-size 0.3s ;
 }
 .itemTitleHover{
   color: black;
+  font-size: 15px;
 }
 .container {
   display: flex;
   flex-direction: column ;
-  align-items: center;
   margin-top: 10px;
 
 }

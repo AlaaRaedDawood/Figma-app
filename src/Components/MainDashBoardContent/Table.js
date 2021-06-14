@@ -19,17 +19,20 @@ import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 // import DeleteIcon from '@material-ui/icons/Delete';
 // import FilterListIcon from '@material-ui/icons/FilterList';
 const headCells = [
-  { id: 'id-number', numeric: true, disablePadding: true, label: 'ID number' },
+  { id: 'id', numeric: true, disablePadding: true, label: 'ID' },
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
   { id: 'supplier', numeric: false, disablePadding: false, label: 'Supplier' },
-  { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
+  { id: 'created_at', numeric: false, disablePadding: false, label: 'Created At' },
 ];
 
 function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, setSearchChange }) {
   const [nextArrow, setNextArrow] = useState(false);
   const [backArrow, setBackArrow] = useState(true);
   const [sortRow, setSortRow] = useState(false);
+  const [sortRowLabel, setSortRowLabel] = useState("");
+  const [order, setOrder] = useState("");
+  const [orderBy, setOrderBy] = useState("");
   const [sortSelectValue, setSortSelectValue] = useState("");
   const [filterRows, setFilterRows] = useState(false);
   const [filerSelectValue, setFilterSelectValue] = useState("");
@@ -45,19 +48,37 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
 
   //table sorting
   function descendingComparator(a, b, orderBy) {
-    console.log('sort descendingComparator ' + JSON.stringify(a['supplier']) + " with " + JSON.stringify(b['supplier']));
-    const aString = JSON.stringify(a['supplier'])
-    const bString = JSON.stringify(b['supplier'])
-    // console.log('sort descendingComparator ' + aString +" with " + bString  + " compare " );
+    let aString = "";
+    let bString = "";
+    if (orderBy === 'name') {
+      aString = JSON.stringify(a['customer']['fname'])
+      bString = JSON.stringify(b['customer']['fname'])
+
+    } else {
+      if (orderBy === 'created_at') {
+        aString = a[orderBy];
+        bString = b[orderBy];
+        console.log('sort descendingComparator ' + orderBy + " " + aString + " with " + bString + " compare ");
+      }
+      else {
+
+        aString = JSON.stringify(a[orderBy])
+        bString = JSON.stringify(b[orderBy])
+
+      }
+
+    }
+
+
     if (bString < aString) {
-      console.log('sort descendingComparator ' + aString + " with " + bString + " compare -1 ");
+      //console.log('sort descendingComparator ' + aString + " with " + bString + " compare -1 ");
       return -1;
     }
     if (bString > aString) {
-      console.log('sort descendingComparator ' + aString + " with " + bString + " compare 1 ");
+      // console.log('sort descendingComparator ' + aString + " with " + bString + " compare 1 ");
       return 1;
     }
-    console.log('sort descendingComparator ' + aString + " with " + bString + " compare 0 ");
+    //console.log('sort descendingComparator ' + aString + " with " + bString + " compare 0 ");
     return 0;
   }
 
@@ -81,22 +102,40 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
 
   //on selecting sorting option
   const handleSortOption = (event) => {
-    if (event.target.value === 'sortasc') {
-      setSortRow(true);
+    if (event.target.value === 'asc') {
+      setOrder('asc');
       setSortSelectValue(event.target.value);
     } else {
-      setSortRow(false);
-      setSortSelectValue('');
-    }
-  }
+      if (event.target.value === 'desc') {
+        setOrder('desc');
+        setSortSelectValue(event.target.value);
+      } else {
+        setOrder('');
+        setSortSelectValue('');
+      }
 
+    }
+    setOrderBy('');
+    setSortRow(false);
+    setSortRowLabel('');
+  }
+  const handleSort = (headCellID) => {
+    if (order) {
+      setOrderBy(headCellID);
+      setSortRow(true);
+      setSortRowLabel(headCellID)
+    }
+
+
+
+  }
   //table pagination
 
   const rowsAfterSorting = (rows) => {
     console.log("alaa sort is = " + sortRow);
     if (sortRow) {
       console.log("sortttttt " + sortRow);
-      const results = stableSort(rows, getComparator('asc', 'gender'));
+      const results = stableSort(rows, getComparator(order, orderBy));
       console.log("sort results " + JSON.stringify(results));
       return results;
     }
@@ -216,6 +255,15 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
         fontWeight: 400,
         color: '#334D6E',
         fontSize: '10px',
+        cursor: 'pointer',
+        transition: 'font-size 0.3s'
+      },
+      "& thead th:hover": {
+        fontFamily: 'Poppins',
+        fontWeight: 400,
+        color: '#109CF1',
+        fontSize: '12px',
+        cursor: 'pointer'
       },
       "& tbody td": {
         fontFamily: 'Poppins',
@@ -300,8 +348,9 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
         <span className="sortOrderOptions">
           Sort by:
           <select name="sort" id="sort" onChange={handleSortOption} value={sortSelectValue}>
-            <option value=""> Click Here  </option>
-            <option value="sortasc">Supplier:A to Z</option>
+            <option value="">No Sort</option>
+            <option value="asc">ASC</option>
+            <option value="desc">DESC</option>
           </select>
           <i class="fas fa-caret-down"></i>
         </span>
@@ -316,26 +365,47 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
                 <TableCell padding="checkbox">
                   <Checkbox size="small" disabled inputProps={{ 'aria-label': 'disabled checkbox' }} />
                 </TableCell>
-                {headCells.map((headCell) => (
-
-                  <TableCell
-                    key={headCell.id}
-                    align={'left'}
-                  >
-
-                    {headCell.label}
+                {headCells.map((headCell) => {
+                  return (sortRow && (sortRowLabel === headCell.id)?
 
 
-                  </TableCell>
 
-                ))}
+                    <TableCell
+                      style={{ color: "#109CF1" }}
+                      key={headCell.id}
+                      align={'left'}
+                      onClick={() => handleSort(headCell.id)}
+                      name={headCell.id}
+                    >
+
+                      {headCell.label}
+
+
+                    </TableCell>
+                    :
+
+
+                    <TableCell
+                      key={headCell.id}
+                      align={'left'}
+                      onClick={() => handleSort(headCell.id)}
+                      name={headCell.id}
+                    >
+
+                      {headCell.label}
+
+
+                    </TableCell>
+
+                  )
+                })}
 
               </TableRow>
             </TableHead>
             <TableBody>
               {
 
-                console.log('ssssssssssssssssss ' + selectedElements)
+                // console.log('ssssssssssssssssss ' + selectedElements)
               }
               {
                 rowsAfterPagingAndSorting().map((row) => {
@@ -390,13 +460,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
             onChangePage={handleChangePage}
             classes={{
 
-              caption: classes.tablePaginationCaption,
-
-              // root: classes.tablePagination,
-              // caption: classes.tablePaginationCaption,
-              // selectIcon: classes.tablePaginationSelectIcon,
-              // select: classes.tablePaginationSelect,
-              // actions: classes.tablePaginationActions,
+              caption: classes.tablePaginationCaption
 
 
             }}

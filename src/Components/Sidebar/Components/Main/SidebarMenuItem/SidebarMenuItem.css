@@ -53,11 +53,11 @@
     padding: 0;
     margin: 0;
     margin-left: 4px;
+    transition: font-size 0.1s ;
 }
-.item .itemTitle:hover{
-  color:black;
+.itemTitleHover{
+  color: black;
 }
-
 .sidebarmenuitemtitle:hover{
   color:black;
 }
