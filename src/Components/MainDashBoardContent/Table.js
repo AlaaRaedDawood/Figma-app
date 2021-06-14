@@ -29,8 +29,8 @@ const headCells = [
 function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, setSearchChange }) {
   const [nextArrow, setNextArrow] = useState(false);
   const [backArrow, setBackArrow] = useState(true);
-  const [sortRow, setSortRow] = useState(false);
-  const [sortRowLabel, setSortRowLabel] = useState("");
+  const [selectColumn, setSelectColumn] = useState(false);
+  const [selectColumnLabel, setSelectColumnLabel] = useState("");
   const [order, setOrder] = useState("");
   const [orderBy, setOrderBy] = useState("");
   const [sortSelectValue, setSortSelectValue] = useState("");
@@ -116,14 +116,14 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
 
     }
     setOrderBy('');
-    setSortRow(false);
-    setSortRowLabel('');
+    setSelectColumn(false);
+    setSelectColumnLabel('');
   }
   const handleSort = (headCellID) => {
     if (order) {
       setOrderBy(headCellID);
-      setSortRow(true);
-      setSortRowLabel(headCellID)
+      setSelectColumn(true);
+      setSelectColumnLabel(headCellID)
     }
 
 
@@ -132,9 +132,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
   //table pagination
 
   const rowsAfterSorting = (rows) => {
-    console.log("alaa sort is = " + sortRow);
-    if (sortRow) {
-      console.log("sortttttt " + sortRow);
+    if (selectColumn) {
       const results = stableSort(rows, getComparator(order, orderBy));
       console.log("sort results " + JSON.stringify(results));
       return results;
@@ -294,7 +292,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
       backgroundColor: '#F3F7FB'
     },
     tableRowPending: {
-      backgroundColor: '#edfff3'
+      backgroundColor: '#B5E3FA'
     }
 
   });
@@ -317,7 +315,6 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
 
   return (
     <div className='main-table'>
-      {/* <TextField className={classes.textField}  id="outlined-search" size="small" label="Search field" type="search" variant="outlined" /> */}
       <Paper component="form" className={classes.root}>
         <SearchIcon disabled="true" disableRipple="true" disableFocusRipple="true" />
 
@@ -366,7 +363,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, se
                   <Checkbox size="small" disabled inputProps={{ 'aria-label': 'disabled checkbox' }} />
                 </TableCell>
                 {headCells.map((headCell) => {
-                  return (sortRow && (sortRowLabel === headCell.id)?
+                  return (selectColumn && (selectColumnLabel === headCell.id)?
 
 
 
