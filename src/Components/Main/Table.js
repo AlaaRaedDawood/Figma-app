@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import './MainTable.css'
-import moment, { normalizeUnits } from 'moment'
-import { positions } from '@material-ui/system';
+import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -13,17 +10,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import TextField from '@material-ui/core/TextField';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
+import { Checkbox } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
@@ -37,7 +26,7 @@ const headCells = [
   { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
 ];
 
-function MainTable({ rows, filterFunction, selectedElements, setSelectedItem , setSearchChange}) {
+function MainTable({ rows, filterFunction, selectedElements, setSelectedItem, setSearchChange }) {
   const [nextArrow, setNextArrow] = useState(false);
   const [backArrow, setBackArrow] = useState(true);
   const [sortRow, setSortRow] = useState(false);
@@ -48,8 +37,8 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem , s
   const rowsPerPage = 8;
 
 
-   //Search
-   const handleSearchChange = (event) => {
+  //Search
+  const handleSearchChange = (event) => {
     setSearchChange((event.target.value).toLowerCase());
   };
 
@@ -184,24 +173,24 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem , s
   }
 
   //styles
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles({
     root: {
       padding: '2px 4px',
       display: 'flex',
       alignItems: 'center',
       width: 950,
-      position: 'relative' ,
+      position: 'relative',
       left: -35
 
     },
     input: {
-      marginLeft: theme.spacing(1),
+      marginLeft: 1,
       flex: 1,
     },
     iconButton: {
       padding: 10,
-      position: 'relative' ,
-      left:'650px'
+      position: 'relative',
+      left: '650px'
 
 
     },
@@ -236,6 +225,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem , s
         color: '#707683',
         fontSize: '10px',
 
+
       },
       "& tbody tr:hover": {
         cursor: 'pointer',
@@ -243,8 +233,8 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem , s
 
 
       }
-
-    },
+   }
+    ,
     tableCellID: {
       color: "#323C47",
       fontFamily: 'Poppins',
@@ -253,16 +243,17 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem , s
     },
     tablePaginationCaption: {
       display: 'none'
+    },
+    tableRowSelected: {
+      backgroundColor: '#F3F7FB'
+    },
+    tableRowPending: {
+      backgroundColor: '#edfff3'
     }
 
-  }));
+  });
   const handleSelectedItem = (event, itemID) => {
     setSelectedItem(itemID);
-    //console.log(selectedElements[id] + " mmmmmmmmmmmmmmm");
-    // setSelectedItem({...selectedElements , [event.target.id]: event.target.checked})
-    // const handleChange = (event) => {
-    //   setState({ ...state, [event.target.name]: event.target.checked });
-    // };
   }
   const getSelectedElementValue = (id) => {
     console.log('llo' + id)
@@ -288,7 +279,7 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem , s
           className={classes.input}
           placeholder="Search"
           inputProps={{ 'aria-label': 'search google maps' }}
-          onChange= {handleSearchChange}
+          onChange={handleSearchChange}
         />
         <IconButton color="primary" className={classes.iconButton} aria-label="directions">
           <NotificationsNoneIcon />
@@ -320,100 +311,102 @@ function MainTable({ rows, filterFunction, selectedElements, setSelectedItem , s
 
 
 
-      <TableContainer className={classes.tableContainer} component={Paper}>
-        <Table aria-label="simple table" >
+        <TableContainer className={classes.tableContainer} component={Paper}>
+          <Table aria-label="simple table" >
 
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox size="small" disabled inputProps={{ 'aria-label': 'disabled checkbox' }} />
-              </TableCell>
-              {headCells.map((headCell) => (
+            <TableHead>
+              <TableRow>
+                <TableCell padding="checkbox">
+                  <Checkbox size="small" disabled inputProps={{ 'aria-label': 'disabled checkbox' }} />
+                </TableCell>
+                {headCells.map((headCell) => (
 
-                <TableCell
-                  key={headCell.id}
-                  align={'left'}
-                >
+                  <TableCell
+                    key={headCell.id}
+                    align={'left'}
+                  >
 
                     {headCell.label}
 
 
-                </TableCell>
+                  </TableCell>
 
-              ))}
+                ))}
 
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {
 
-              console.log('ssssssssssssssssss ' + selectedElements)
-            }
-            {
-              rowsAfterPagingAndSorting().map((row) => {
-                const isItemSelected = selectedElements[row.id] ? true : false;
-
-                return (
-
-                  <TableRow key={row.id}
-                    onClick={(event) => handleSelectedItem(event, row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    selected={isItemSelected}
-                  >
-
-                    <TableCell padding="checkbox">
-                      <Checkbox
-
-                        size="small"
-                        checked={isItemSelected}
-
-                      />
-                    </TableCell>
-                    <TableCell className={classes.tableCellID} align="left">{'#' + row.id}</TableCell>
-                    <TableCell align="left">{row.customer.fname}</TableCell>
-                    <TableCell align="left">{row.status.replace("_", " ")}</TableCell>
-                    <TableCell align="left">{row.supplier}</TableCell>
-                    <TableCell align="left">{moment(row.created_at).format("MMMM D,h:mma,YYYY")}</TableCell>
-                  </TableRow>
-                )
+                console.log('ssssssssssssssssss ' + selectedElements)
               }
-              )
+              {
+                rowsAfterPagingAndSorting().map((row) => {
+                  const isItemSelected = selectedElements[row.id] ? true : false;
+                  const rowStyle = (row.status === "pending_confirmation") ? classes.tableRowPending  : "" ;
+                  return (
 
-            }
+                    <TableRow
+                      key={row.id}
+                      onClick={(event) => handleSelectedItem(event, row.id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      className={isItemSelected ? classes.tableRowSelected : rowStyle}
+                    >
 
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {console.log('At Table Pagination rows = ' + rows.length)}
-      {(rows.length > 8) ?
-        <TablePagination
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          size="small"
+                          checked={isItemSelected}
+                          color="primary"
+                          inputProps={{ 'aria-label': 'secondary checkbox' }}
 
-          nextIconButtonProps={nextArrow ? { disabled: true } : { disabled: false }}
-          backIconButtonProps={backArrow ? { disabled: true } : { disabled: false }}
-          component="div"
-          rowsPerPageOptions={[8]}
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={currentPage}
-          onChangePage={handleChangePage}
-          classes={{
+                        />
+                      </TableCell>
+                      <TableCell className={classes.tableCellID} align="left">{'#' + row.id}</TableCell>
+                      <TableCell align="left">{row.customer.fname}</TableCell>
+                      <TableCell align="left">{row.status.replace("_", " ")}</TableCell>
+                      <TableCell align="left">{row.supplier}</TableCell>
+                      <TableCell align="left">{moment(row.created_at).format("MMMM D,h:mma,YYYY")}</TableCell>
+                    </TableRow>
+                  )
+                }
+                )
 
-            caption: classes.tablePaginationCaption,
+              }
 
-            // root: classes.tablePagination,
-            // caption: classes.tablePaginationCaption,
-            // selectIcon: classes.tablePaginationSelectIcon,
-            // select: classes.tablePaginationSelect,
-            // actions: classes.tablePaginationActions,
+            </TableBody>
+          </Table>
+        </TableContainer>
+        {console.log('At Table Pagination rows = ' + rows.length)}
+        {(rows.length > 8) ?
+          <TablePagination
+
+            nextIconButtonProps={nextArrow ? { disabled: true } : { disabled: false }}
+            backIconButtonProps={backArrow ? { disabled: true } : { disabled: false }}
+            component="div"
+            rowsPerPageOptions={[8]}
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={currentPage}
+            onChangePage={handleChangePage}
+            classes={{
+
+              caption: classes.tablePaginationCaption,
+
+              // root: classes.tablePagination,
+              // caption: classes.tablePaginationCaption,
+              // selectIcon: classes.tablePaginationSelectIcon,
+              // select: classes.tablePaginationSelect,
+              // actions: classes.tablePaginationActions,
 
 
-          }}
+            }}
 
 
-        /> : ""}
-        </div>
+          /> : ""}
+      </div>
     </div>
   );
 }

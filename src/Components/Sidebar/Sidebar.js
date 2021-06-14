@@ -6,7 +6,7 @@ function Sidebar() {
 
   return (
     <div className='sidenav'>
-      <h1>hello11</h1>
+      <p className='titleSideBar'>XO.</p>
       <Profile></Profile>
       <SidebarMenu></SidebarMenu>
 
