@@ -9,7 +9,7 @@ then
 ### `npm start`
 
 # Features of Spree-Figma-Task-Web-App
- # Search Feature
+ # Sort Feature
  you can select column label then choose to sort either ascending or descending or remove sorting
 
 
